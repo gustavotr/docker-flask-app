@@ -1,8 +1,5 @@
-version: '3'
-services:
-  web:
+
+nginx:
     build: .
     ports:
-     - "5000:6379"
-  redis:
-    image: "redis:alpine"
+      - "80:80"
