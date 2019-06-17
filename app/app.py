@@ -62,16 +62,31 @@ def get_cursos():
 
 @app.route('/api/v1.0/aluno', methods=['POST'])
 def add_aluno():
-  estudantes = mongo.db.estudantes
-  aluno = request.get_json()
-  for prop in aluno:
-      if( prop != 'municipio'):
-        aluno[prop] = aluno[prop].upper()
-  aluno_id = estudantes.insert(aluno)
-  novo_aluno = estudantes.find_one({'_id': aluno_id })
-  output = get_item(novo_aluno)
-  return make_response( jsonify({'result' : output}), 201)
+    estudantes = mongo.db.estudantes
+    aluno = request.get_json()
+    for prop in aluno:
+        if( prop != 'municipio'):
+            aluno[prop] = aluno[prop].upper()
+    aluno_id = estudantes.insert(aluno)
+    novo_aluno = estudantes.find_one({'_id': aluno_id })
+    output = get_item(novo_aluno)
+    return make_response( jsonify({'result' : output}), 201)
+
+@app.route('/api/v1.0/aluno', methods=['DELETE'])
+def delete_aluno():
+    ra = request.args.get('ra', default = None)
+    campus = request.args.get('campus', default = None)
+
+    params = {}
     
+    if(ra is not None):
+        params['ra'] = ra
+    
+    if(campus is not None):
+        params['campus'] = campus
+
+    mongo.db.estudantes.delete_many(params)    
+    return make_response( jsonify({'result': 'success'}), 200 )    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
