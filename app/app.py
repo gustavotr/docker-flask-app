@@ -3,6 +3,7 @@ from flask import render_template
 from flask import Flask, jsonify
 from flask_pymongo import PyMongo
 from flask import request
+from flask import make_response
 
 app = Flask(__name__)
 mongo = PyMongo(app, uri =  "mongodb://host.docker.internal:27017/gustavorudiger")
@@ -56,6 +57,20 @@ def get_cursos():
     for c in cursos:
         output.append(c)
     return jsonify({'result': output})
+
+
+
+@app.route('/api/v1.0/aluno', methods=['POST'])
+def add_aluno():
+  estudantes = mongo.db.estudantes
+  aluno = request.get_json()
+  for prop in aluno:
+      if( prop != 'municipio'):
+        aluno[prop] = aluno[prop].upper()
+  aluno_id = estudantes.insert(aluno)
+  novo_aluno = estudantes.find_one({'_id': aluno_id })
+  output = get_item(novo_aluno)
+  return make_response( jsonify({'result' : output}), 201)
     
 
 if __name__ == '__main__':
