@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from flask import request
 
 app = Flask(__name__)
-mongo = PyMongo(app, uri =  "mongodb://localhost:27017/gustavorudiger")
+mongo = PyMongo(app, uri =  "mongodb://host.docker.internal:27017/gustavorudiger")
 
 @app.route('/')
 def hello():
@@ -16,7 +16,7 @@ def get_estudantes():
     estudantes = mongo.db.estudantes
     output = []
     for e in estudantes.find():
-        output.append({'nome' : e['nome '], 'ra' : e['ra']})
+        output.append({'nome' : e['nome'], 'ra' : e['ra']})
     #return jsonify({'estudantes': estudantes})
     return jsonify({'result' : output})
 
