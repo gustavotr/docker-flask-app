@@ -36,8 +36,12 @@ def get_estudantes():
     if(modalidade is not None):
         params['modalidade'] = modalidade
     
-    if(inicio is not None):
+    if(inicio is not None and fim is not None):
+        params['data_inicio'] = { '$gt': inicio, '$lt': fim } 
+    elif(inicio is not None and fim is None):
         params['data_inicio'] = { '$gt': inicio }
+    elif(inicio is None and fim is not None):
+        params['data_inicio'] = { '$lt': fim }
 
     estudantes = mongo.db.estudantes.find(params).sort("_id", -1)
     output = []
