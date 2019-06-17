@@ -58,7 +58,23 @@ def get_cursos():
         output.append(c)
     return jsonify({'result': output})
 
+@app.route('/api/v1.0/total_alunos', methods=['GET'])
+def get_total_alunos():    
+    campus = request.args.get('campus', default = None)
+    inicio = request.args.get('inicio', default = None)
+    fim = request.args.get('fim', default = None)
+    params = {}
+    
+    if(campus is not None):
+        params['campus'] = campus
+    if(inicio is not None):
+        params['data_inicio'] = { '$gt': inicio }
+    if(fim is not None):
+        params['data_fim'] = { '$lt': fim }
 
+    total_alunos = mongo.db.estudantes.find(params).count()
+    output = total_alunos
+    return jsonify({'result': output})
 
 @app.route('/api/v1.0/aluno', methods=['POST'])
 def add_aluno():
