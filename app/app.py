@@ -99,17 +99,19 @@ def add_aluno():
 def delete_aluno():
     ra = request.args.get('ra', default = None)
     campus = request.args.get('campus', default = None)
-
+    minimum_requirements = False
     params = {}
     
     if(ra is not None):
         params['ra'] = ra
+        minimum_requirements = True
     
-    if(campus is not None):
+    if(minimum_requirements and campus is not None):
         params['campus'] = campus
+    if(minimum_requirements):
+        mongo.db.estudantes.delete_many(params)    
 
-    mongo.db.estudantes.delete_many(params)    
-    return make_response( jsonify({'result': 'success'}), 200 )    
+    return jsonify({'result': 'success'}) if minimum_requirements else jsonify({'error': 'O RA do aluno deve ser informado!'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
