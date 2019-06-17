@@ -6,6 +6,7 @@ from flask import request
 
 app = Flask(__name__)
 mongo = PyMongo(app, uri =  "mongodb://host.docker.internal:27017/gustavorudiger")
+#mongo = PyMongo(app, uri =  "mongodb://127.0.0.1:27017/gustavorudiger")
 
 @app.route('/')
 def hello():
@@ -17,7 +18,6 @@ def get_estudantes():
     output = []
     for e in estudantes.find():
         output.append({'nome' : e['nome'], 'ra' : e['ra']})
-    #return jsonify({'estudantes': estudantes})
     return jsonify({'result' : output})
 
 if __name__ == '__main__':
