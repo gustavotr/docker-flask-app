@@ -42,7 +42,21 @@ def get_estudantes():
     for e in estudantes:
         output.append(get_item(e))
     return jsonify({'result': output})
+
+@app.route('/api/v1.0/cursos', methods=['GET'])
+def get_cursos():
+    campus = request.args.get('campus', default = None)
+    params = {}
+    
+    if(campus is not None):
+        params['campus'] = campus
+
+    cursos = mongo.db.estudantes.distinct('curso', params)
+    output = []
+    for c in cursos:
+        output.append(c)
+    return jsonify({'result': output})
     
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug = True)
