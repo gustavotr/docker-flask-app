@@ -30,6 +30,7 @@ def hello():
 def get_estudantes():
     modalidade = request.args.get('modalidade', default = None)
     inicio = request.args.get('inicio', default = None)
+    fim = request.args.get('fim', default = None)
     params = {}
     
     if(modalidade is not None):
@@ -67,10 +68,12 @@ def get_total_alunos():
     
     if(campus is not None):
         params['campus'] = campus
-    if(inicio is not None):
+    if(inicio is not None and fim is not None):
+        params['data_inicio'] = { '$gt': inicio, '$lt': fim } 
+    elif(inicio is not None and fim is None):
         params['data_inicio'] = { '$gt': inicio }
-    if(fim is not None):
-        params['data_fim'] = { '$lt': fim }
+    elif(inicio is None and fim is not None):
+        params['data_inicio'] = { '$lt': fim }
 
     total_alunos = mongo.db.estudantes.find(params).count()
     output = total_alunos
